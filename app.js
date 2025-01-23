@@ -5,6 +5,9 @@ const moviesRouter = require("./routers/moviesRouter");
 const app = express();
 const port = process.env.SERVER_PORT;
 
+// Make Public folder accessible
+app.use(express.static("public"));
+
 // Router Groups
 app.use("/movies", moviesRouter);
 
