@@ -3,8 +3,17 @@ const connection = require("../data/movies_db");
 
 // Index
 const index = (req, res) => {
-    const sql = "SELECT * FROM `movies`"
-    connection.query(sql, (err, movies) => {
+    // Query string params
+    const filters = req.query;
+    const params = [];
+    // SQL
+    let sql = "SELECT * FROM `movies`"
+    if (filters.search) {
+        sql += "WHERE `movies`.`title` LIKE ?"
+        params.push(`%${filters.search}%`)
+    }
+    // Query
+    connection.query(sql, [params], (err, movies) => {
         if (err) return next(new Error("Internal Server error"));
         res.status(200).json({
             status: "success",
