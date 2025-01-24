@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 // Routers
 const moviesRouter = require("./routers/moviesRouter");
 // Middlewares
@@ -8,6 +9,11 @@ const notFoundRoute = require("./middlewares/notFoundRoute");
 // Express App
 const app = express();
 const port = process.env.SERVER_PORT;
+
+// CORS Middleware
+app.use(cors({
+    origin: process.env.FE_URL
+}))
 
 // Make Public folder accessible
 app.use(express.static("public"));
