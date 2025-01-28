@@ -36,7 +36,7 @@ const show = (req, res) => {
     connection.query(sql, [id], (err, movieArray) => {
         if (err) return next(new Error("Internal Server error"));
         if (movieArray.length === 0) {
-            return res.status(404).json({ status: "fail", message: "Movie not found", error: err.message })
+            return res.status(404).json({ status: "fail", message: "Movie not found", error: err.message})
         } else {
             connection.query(sqlReviews, [id], (err, reviews) => {
                 if (err) return next(new Error("Internal Server error"));
@@ -49,7 +49,28 @@ const show = (req, res) => {
     })
 }
 
+// Store review
+const storeReview = (req, res, next) => {
+    const movieId = req.params.id;
+    const {name, vote, text} = req.body;
+
+    // Check movie exists
+    const movieSql = "SELECT * FROM `movies` WHERE id = ?"
+    connection.query(movieSql, [movieId], (err, results) => {
+        if(err) return next(new Error("Internal Server error"))
+        if(results.length === 0) return res.status(404).json({ status: "fail", message: "Movie not found", error: err.message})
+    });
+
+    // Store new review
+    const sql = "INSERT INTO reviews(movie_id, name, vote, text) VALUES (?, ?, ?, ?)"
+    connection.query(sql, [movieId, name, vote, text], (err, results) => {
+        if(err) return next(new Error("Internal Server error"))
+        res.status(201).json({status: "success", message: "Review added"})
+    })
+}
+
 module.exports = {
     index,
-    show
+    show,
+    storeReview
 }

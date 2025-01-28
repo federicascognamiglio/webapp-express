@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 // Routers
 const moviesRouter = require("./routers/moviesRouter");
-// Middlewares
+// Errors Middlewares
 const errorsHandler = require("./middlewares/errorsHandler");
 const notFoundRoute = require("./middlewares/notFoundRoute");
 
@@ -17,6 +17,8 @@ app.use(cors({
 
 // Make Public folder accessible
 app.use(express.static("public"));
+// Parse json
+app.use(express.json());
 
 // Router Groups
 app.use("/movies", moviesRouter);
