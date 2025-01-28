@@ -36,7 +36,7 @@ const show = (req, res) => {
     connection.query(sql, [id], (err, movieArray) => {
         if (err) return next(new Error("Internal Server error"));
         if (movieArray.length === 0) {
-            return res.status(404).json({ status: "fail", message: "Movie not found", error: err.message})
+            return res.status(404).json({ status: "fail", message: "Movie not found"})
         } else {
             connection.query(sqlReviews, [id], (err, reviews) => {
                 if (err) return next(new Error("Internal Server error"));
@@ -58,7 +58,7 @@ const storeReview = (req, res, next) => {
     const movieSql = "SELECT * FROM `movies` WHERE id = ?"
     connection.query(movieSql, [movieId], (err, results) => {
         if(err) return next(new Error("Internal Server error"))
-        if(results.length === 0) return res.status(404).json({ status: "fail", message: "Movie not found", error: err.message})
+        if(results.length === 0) return res.status(404).json({ status: "fail", message: "Movie not found"})
     });
 
     // Store new review
