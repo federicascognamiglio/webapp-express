@@ -35,7 +35,7 @@ const show = (req, res) => {
     `
     connection.query(sql, [slug], (err, movieArray) => {
         if (err) return next(new Error("Internal Server error"));
-        if (movieArray.length === 0) {
+        if (movieArray.length === 0 || movieArray[0].id === null) {
             return res.status(404).json({ status: "fail", message: "Movie not found"})
         } else {
             connection.query(sqlReviews, [slug], (err, reviews) => {
@@ -53,6 +53,29 @@ const show = (req, res) => {
 const storeReview = (req, res, next) => {
     const movieId = req.params.id;
     const {name, vote, text} = req.body;
+
+    // Validation
+    // Check vote
+    if (isNaN(vote) || vote < 0 || vote > 5) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Insert vote from 0 to 5"
+        })
+    }
+    // Check name
+    if (name.length <= 3) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Name should be at least 4 characters"
+        })
+    }
+    // Check text
+    if (text && text.length > 0 && text.length < 5) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Text should be at least 10 characters"
+        })
+    }
 
     // Check movie exists
     const movieSql = "SELECT * FROM `movies` WHERE id = ?"
