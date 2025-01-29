@@ -24,21 +24,21 @@ const index = (req, res) => {
 
 // Show
 const show = (req, res) => {
-    const id = req.params.id;
-    const sql = "SELECT * FROM `movies` WHERE `movies`.`id` = ?"
+    const slug = req.params.slug;
+    const sql = "SELECT * FROM `movies` WHERE `movies`.`slug` = ?"
     const sqlReviews = `
     SELECT reviews.*
     FROM reviews
     JOIN movies
     ON reviews.movie_id = movies.id
-    WHERE movies.id = ?
+    WHERE movies.slug = ?
     `
-    connection.query(sql, [id], (err, movieArray) => {
+    connection.query(sql, [slug], (err, movieArray) => {
         if (err) return next(new Error("Internal Server error"));
         if (movieArray.length === 0) {
             return res.status(404).json({ status: "fail", message: "Movie not found"})
         } else {
-            connection.query(sqlReviews, [id], (err, reviews) => {
+            connection.query(sqlReviews, [slug], (err, reviews) => {
                 if (err) return next(new Error("Internal Server error"));
                 res.status(200).json({
                     status: "success",
